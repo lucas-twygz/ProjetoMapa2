@@ -15,6 +15,18 @@
     margin: 0 auto;
 }
 
+.removeButton {
+    display: block;
+    margin: 0 auto;
+    background-color: rgb(194, 31, 31);
+}
+
+.removeButton:hover {
+    display: block;
+    margin: 0 auto;
+    background-color: rgb(111, 28, 28);
+}
+
 .MarkerBox{
     background-color: #5a5a5b40;
     margin-bottom: 10px;

@@ -19,8 +19,7 @@ const MapComponent = () => {
   const [center, setCenter] = useState(defaultCenter);
 
   useEffect(() => {
-    // add o centro inicial como marcador qnd carrega o mapa
-    setMarkers([{ ...defaultCenter, title: "Ponto Inicial -  Campus Unifor Bloco J" }]);
+    setMarkers([{ ...defaultCenter, title: "Ponto Inicial - Campus Unifor Bloco J" }]);
   }, []);
 
   const handleClick = (event) => {
@@ -31,16 +30,20 @@ const MapComponent = () => {
   const handleAddMarker = () => {
     const lat = parseFloat(newMarker.lat);
     const lng = parseFloat(newMarker.lng);
-    if (!isNaN(lat) && !isNaN(lng) && newMarker.title.trim() !== "") { // verificando se tem lat , log e nome no ponto
+    if (!isNaN(lat) && !isNaN(lng) && newMarker.title.trim() !== "") {
       setMarkers([...markers, { lat, lng, title: newMarker.title }]);
       setNewMarker({ lat: "", lng: "", title: "" });
     }
   };
 
+  const handleRemoveMarker = (index) => {
+    setMarkers(markers.filter((_, i) => i !== index));
+  };
+
   const handleMarkerClick = (lat, lng) => {
     if (mapRef) {
       mapRef.panTo({ lat, lng });
-      setCenter({ lat, lng }); // atualiza o centro pra focar no ponto
+      setCenter({ lat, lng });
     }
   };
 
@@ -50,45 +53,39 @@ const MapComponent = () => {
         <h1>Mapa Interativo</h1>
 
         <div className={styles.inputContainer}>
-          <input  type="text" placeholder="Latitude" value={newMarker.lat} onChange={(e) => setNewMarker({ ...newMarker, lat: e.target.value })} />
-         
-          <input type="text" placeholder="Longitude" value={newMarker.lng}onChange={(e) => setNewMarker({ ...newMarker, lng: e.target.value })}/>
-
-          <input type="text" placeholder="Nome do Ponto" value={newMarker.title} onChange={(e) => setNewMarker({ ...newMarker, title: e.target.value })}/>
-
+          <input type="text" placeholder="Latitude" value={newMarker.lat} onChange={(e) => setNewMarker({ ...newMarker, lat: e.target.value })} />
+          <input type="text" placeholder="Longitude" value={newMarker.lng} onChange={(e) => setNewMarker({ ...newMarker, lng: e.target.value })} />
+          <input type="text" placeholder="Nome do Ponto" value={newMarker.title} onChange={(e) => setNewMarker({ ...newMarker, title: e.target.value })} />
           <button onClick={handleAddMarker}>Adicionar Ponto</button>
-
         </div>
 
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={center} // garante q o mapa inicia focado no centro
-              zoom={18}
-              onClick={handleClick}
-              onLoad={(map) => setMapRef(map)}>
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={18}
+          onClick={handleClick}
+          onLoad={(map) => setMapRef(map)}>
+          {markers.map((marker, index) => (
+            <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} title={marker.title} />
+          ))}
+        </GoogleMap>
 
-              {markers.map((marker, index) => (
-                <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} title={marker.title} />
-              ))}
-            </GoogleMap>
-            
-            <div className={styles.MarkerBox}>
-            
-              <div className={styles.textMarker}>
-                <h3>Lista de Marcadores</h3>
-              </div>
-
-              <ul>
-                {markers.map((marker, index) => (
-                  <li key={index} onClick={() => handleMarkerClick(marker.lat, marker.lng)}>
-                    {marker.title} ({marker.lat.toFixed(4)}, {marker.lng.toFixed(4)})
-                  </li> ))}
-              </ul>
-
-            </div>
-
+        <div className={styles.MarkerBox}>
+          <div className={styles.textMarker}>
+            <h3>Lista de Marcadores</h3>
+          </div>
+          <ul>
+            {markers.map((marker, index) => (
+              <li key={index}>
+                <span onClick={() => handleMarkerClick(marker.lat, marker.lng)}>
+                  {marker.title} ({marker.lat.toFixed(4)}, {marker.lng.toFixed(4)})
+                </span>
+                <button onClick={() => handleRemoveMarker(index)} className={styles.removeButton}>Remover</button>
+              </li>
+            ))}
+          </ul>
         </div>
-
+      </div>
     </LoadScript>
   );
 };
