@@ -37,3 +37,8 @@ Este arquivo contém a lógica principal do projeto.
 ## 5. Data de Entrega
 - **Apresentação e entrega final:** 25/02/2025
 
+## Experimente!
+- **O repositório está disponivel para rodar via Web**
+- Link:
+https://projeto-mapa2.vercel.app/
+
